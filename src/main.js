@@ -48,6 +48,23 @@ const nameBank = {
     ['Miso', 'Tiny, savory, and full of comforting character.'],
     ['Bug', 'The littlest lovebug in the whole wide world.'],
     ['Sprout', 'Small today, full of wild possibility tomorrow.']
+  ],
+  naughty: [
+    ['Pussy Galore', 'A legendary little pussy with expensive taste and absolutely no shame.'],
+    ['Doggy Style', 'Always right behind you and suspiciously proud of the position.'],
+    ['Clit Eastwood', 'Good, bad, and shamelessly obsessed with getting stroked.'],
+    ['Master Baiter', 'Give them a wriggly toy and they will play with it for hours.'],
+    ['Sir Licks-a-Lot', 'That tongue is out, the manners are gone, and nobody is safe.'],
+    ['Spank Sinatra', 'They did it their way—and now the whole sofa needs a cigarette.'],
+    ['Harry Balls', 'Fluffy underneath, swinging with confidence, and impossible to ignore.'],
+    ['Bone Daddy', 'Big treat energy with a weakness for anything long, hard, and chewable.'],
+    ['Muffin Diver', 'Headfirst into every warm, fluffy opening they can find.'],
+    ['Biggus Dickus', 'A very grand name for a suspiciously tiny package.'],
+    ['Furplay', 'All teasing, heavy petting, and absolutely no respect for personal space.'],
+    ['Woody', 'Up at dawn, eager for action, and always carrying a large stick.'],
+    ['Randy', 'Humps first, asks questions never. Hide the good cushions.'],
+    ['Bitch Please', 'A bad bitch with flawless fur and a zero-tolerance treat policy.'],
+    ['Motherfluffer', 'Soft to the touch, filthy in spirit, and banned from polite company.']
   ]
 };
 
@@ -58,6 +75,32 @@ const petTweaks = {
   bird: ['Kiwi', 'Pico', 'Chirpy', 'Sunny', 'Feather'],
   surprise: ['Mochi', 'Bean', 'Puff', 'Ziggy', 'Pookie']
 };
+
+const naughtyPetTweaks = {
+  cat: [
+    ['Heavy Petting', 'One touch turns into an all-night session. That purr is indecent.'],
+    ['Wet Pussy', 'One bath, two furious eyes, and a phrase you cannot say at the vet.']
+  ],
+  dog: [
+    ['Morning Wood', 'Up early, carrying a branch, and thrilled to show everybody.'],
+    ['Raw Dog', 'No collar, no filter, and no interest in behaving responsibly.']
+  ],
+  bunny: [
+    ['Thumper? I Hardly Know Her', 'Fast feet, filthy timing, and one extremely suggestive surname.'],
+    ['Hugh Hopner', 'A tiny robe, a velvet hutch, and several scandalous girlfriends.']
+  ],
+  bird: [
+    ['Pecker', 'Small beak, enormous confidence, and always banging on something.'],
+    ['Cock Robin', 'Bright feathers, a proud chest, and a name that enters the room first.']
+  ],
+  surprise: [
+    ['Safeword', 'The one name guaranteed to make the entire dog park stop.'],
+    ['Dirty Little Secret', 'Cute in public. Absolutely unprintable behind closed doors.']
+  ]
+};
+
+const defaultTicker = ['PIP', '♡', 'WAFFLES', '✦', 'CLOVER', '♡', 'BISCUIT', '✦', 'BEANS', '♡', 'MOCHI', '✦'];
+const naughtyTicker = ['PUSSY GALORE', '♥', 'DOGGY STYLE', '✦', 'BONE DADDY', '♥', 'FURPLAY', '✦', 'HARRY BALLS', '♥', 'SPANK SINATRA', '✦'];
 
 const petLabels = {
   cat: 'Cat',
@@ -104,7 +147,7 @@ app.innerHTML = `
     </a>
     <div class="header-note">
       <span class="pulse-dot"></span>
-      names made fresh daily
+      <span id="header-note-copy">names made fresh daily</span>
     </div>
   </header>
 
@@ -112,14 +155,14 @@ app.innerHTML = `
     <section class="hero-shell">
       <div class="hero-copy">
         <div class="eyebrow reveal" style="--delay: .08s">
-          <span>✦</span> A name is waiting
+          <span id="eyebrow-icon">✦</span><b id="eyebrow-copy">A name is waiting</b>
         </div>
-        <h1 class="reveal" style="--delay: .16s">
+        <h1 class="reveal" id="hero-title" style="--delay: .16s">
           Meet the name<br />
           that makes their<br />
           <span class="scribble">ears perk up.</span>
         </h1>
-        <p class="intro reveal" style="--delay: .24s">
+        <p class="intro reveal" id="hero-intro" style="--delay: .24s">
           Pick your little friend, choose a vibe, and let the name jar do its magic.
         </p>
         <div class="tiny-proof reveal" style="--delay: .32s">
@@ -148,6 +191,7 @@ app.innerHTML = `
               <button class="vibe-tab" data-vibe="silly" type="button" role="radio" aria-checked="false"><span>☻</span> Silly</button>
               <button class="vibe-tab" data-vibe="fancy" type="button" role="radio" aria-checked="false"><span>✦</span> Fancy</button>
               <button class="vibe-tab" data-vibe="tiny" type="button" role="radio" aria-checked="false"><span>·</span> Tiny</button>
+              <button class="vibe-tab naughty-tab" data-vibe="naughty" type="button" role="radio" aria-checked="false"><span>♠</span> Naughty</button>
             </div>
           </div>
 
@@ -170,7 +214,7 @@ app.innerHTML = `
               <span class="portrait-star star-b">✦</span>
             </div>
             <div class="name-result" aria-live="polite" aria-atomic="true">
-              <p class="tiny-label">Your new favorite name is...</p>
+              <p class="tiny-label" id="result-kicker">Your new favorite name is...</p>
               <h2 id="result-name">Mochi</h2>
               <p id="result-description">A soft little name for a certified cuddle expert.</p>
             </div>
@@ -187,10 +231,10 @@ app.innerHTML = `
           <div class="machine-bottom">
             <button class="generate-button" id="generate-button" type="button">
               <span class="button-spark">✦</span>
-              <span class="button-label">Shake the name jar</span>
+              <span class="button-label" id="button-label">Shake the name jar</span>
               <span class="dice" aria-hidden="true"><i></i><i></i><i></i></span>
             </button>
-            <p class="keyboard-tip"><kbd>space</kbd> works too <span>♡</span></p>
+            <p class="keyboard-tip"><kbd>space</kbd> <b id="keyboard-copy">works too</b> <span id="keyboard-icon">♡</span></p>
           </div>
         </div>
       </section>
@@ -213,8 +257,8 @@ app.innerHTML = `
     </section>
 
     <section class="ticker" aria-label="A parade of pet names">
-      <div class="ticker-track">
-        ${['PIP', '♡', 'WAFFLES', '✦', 'CLOVER', '♡', 'BISCUIT', '✦', 'BEANS', '♡', 'MOCHI', '✦', 'PIP', '♡', 'WAFFLES', '✦', 'CLOVER', '♡', 'BISCUIT', '✦', 'BEANS', '♡', 'MOCHI', '✦'].map(item => `<span>${item}</span>`).join('')}
+      <div class="ticker-track" id="ticker-track">
+        ${[...defaultTicker, ...defaultTicker].map(item => `<span>${item}</span>`).join('')}
       </div>
     </section>
   </main>
@@ -226,7 +270,7 @@ app.innerHTML = `
       </span>
       <span class="brand-name">pawpop<span>!</span></span>
     </a>
-    <p>Made for paws, claws, wings &amp; wiggles.</p>
+    <p id="footer-copy">Made for paws, claws, wings &amp; wiggles.</p>
     <span class="footer-flower" aria-hidden="true">✿</span>
   </footer>
 
@@ -255,6 +299,7 @@ const favoritesList = document.querySelector('#favorites-list');
 const clearButton = document.querySelector('#clear-button');
 const toast = document.querySelector('#toast');
 const sparkLayer = document.querySelector('#spark-layer');
+const themeColor = document.querySelector('meta[name="theme-color"]');
 
 document.querySelectorAll('.pet-tab').forEach(button => {
   button.addEventListener('click', event => {
@@ -269,10 +314,13 @@ document.querySelectorAll('.vibe-tab').forEach(button => {
   button.addEventListener('click', event => {
     selectedVibe = button.dataset.vibe;
     setRadioState('.vibe-tab', button);
+    applyVibeTheme(selectedVibe);
     button.classList.remove('bop');
     void button.offsetWidth;
     button.classList.add('bop');
-    popAtEvent(event, ['#a997ff', '#ff7c73', '#ffd663']);
+    popAtEvent(event, selectedVibe === 'naughty'
+      ? ['#ff1f6d', '#ff70a6', '#b32cff', '#ffca3a']
+      : ['#a997ff', '#ff7c73', '#ffd663']);
   });
 });
 
@@ -357,7 +405,7 @@ machine.addEventListener('pointerleave', () => {
 
 document.addEventListener('pointerdown', event => {
   if (event.target.closest('button, a, .favorite-card')) {
-    createSpark(event.clientX, event.clientY, '#ff7c73', 7);
+    createSpark(event.clientX, event.clientY, selectedVibe === 'naughty' ? '#ff1f6d' : '#ff7c73', 7);
   }
 });
 
@@ -367,6 +415,40 @@ function setRadioState(selector, activeButton) {
     button.classList.toggle('active', active);
     button.setAttribute('aria-checked', String(active));
   });
+}
+
+function applyVibeTheme(vibe) {
+  const naughty = vibe === 'naughty';
+  document.body.classList.toggle('naughty-mode', naughty);
+  themeColor?.setAttribute('content', naughty ? '#11060d' : '#fff8ed');
+
+  document.querySelector('#header-note-copy').textContent = naughty ? 'bad names made after dark' : 'names made fresh daily';
+  document.querySelector('#eyebrow-icon').textContent = naughty ? '♥' : '✦';
+  document.querySelector('#eyebrow-copy').textContent = naughty ? 'Zero shame. All game.' : 'A name is waiting';
+  document.querySelector('#hero-title').innerHTML = naughty
+    ? 'Meet the name<br />that makes the<br /><span class="scribble">neighbors blush.</span>'
+    : 'Meet the name<br />that makes their<br /><span class="scribble">ears perk up.</span>';
+  document.querySelector('#hero-intro').textContent = naughty
+    ? 'Pick your filthy little accomplice, dim the lights, and shake out a name that belongs behind closed doors.'
+    : 'Pick your little friend, choose a vibe, and let the name jar do its magic.';
+  document.querySelector('#result-kicker').textContent = naughty ? 'Your safeword is...' : 'Your new favorite name is...';
+  document.querySelector('#button-label').textContent = naughty ? 'Make it filthy' : 'Shake the name jar';
+  document.querySelector('#keyboard-copy').textContent = naughty ? 'gets you off too' : 'works too';
+  document.querySelector('#keyboard-icon').textContent = naughty ? '♥' : '♡';
+  document.querySelector('#footer-copy').textContent = naughty
+    ? 'Made for heavy petting, bad decisions & dirty little animals.'
+    : 'Made for paws, claws, wings & wiggles.';
+  document.querySelector('.footer-flower').textContent = naughty ? '♥' : '✿';
+
+  const floatySymbols = naughty ? ['♠', '♥', '×'] : ['✦', '♡', '✿'];
+  document.querySelectorAll('.floaty').forEach((item, index) => {
+    item.textContent = floatySymbols[index];
+  });
+
+  const tickerItems = naughty ? naughtyTicker : defaultTicker;
+  document.querySelector('#ticker-track').innerHTML = [...tickerItems, ...tickerItems]
+    .map(item => `<span>${item}</span>`)
+    .join('');
 }
 
 function generateName() {
@@ -379,7 +461,9 @@ function generateName() {
 
   window.setTimeout(() => {
     let options = [...nameBank[selectedVibe]];
-    if (Math.random() < 0.3) {
+    if (selectedVibe === 'naughty') {
+      options.push(...naughtyPetTweaks[selectedPet]);
+    } else if (Math.random() < 0.3) {
       options.push(...petTweaks[selectedPet].map(name => [name, petDescription(name, selectedPet)]));
     }
 
@@ -462,6 +546,7 @@ function renderFavorites() {
       const vibeButton = document.querySelector(`[data-vibe="${selectedVibe}"]`);
       if (petButton) setRadioState('.pet-tab', petButton);
       if (vibeButton) setRadioState('.vibe-tab', vibeButton);
+      applyVibeTheme(selectedVibe);
       changePortrait(selectedPet);
       updateSaveButton();
       document.querySelector('.name-machine-wrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -535,7 +620,9 @@ function createSpark(x, y, colors, count = 8) {
 
 function makeConfetti() {
   const rect = document.querySelector('.result-stage').getBoundingClientRect();
-  const colors = ['#ff7c73', '#ffd663', '#6ed3aa', '#9c88ff', '#312943'];
+  const colors = selectedVibe === 'naughty'
+    ? ['#ff1f6d', '#ff70a6', '#b32cff', '#ffca3a', '#fff2f5']
+    : ['#ff7c73', '#ffd663', '#6ed3aa', '#9c88ff', '#312943'];
   for (let i = 0; i < 24; i += 1) {
     const piece = document.createElement('i');
     piece.className = 'confetti';
